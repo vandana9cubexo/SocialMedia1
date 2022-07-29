@@ -184,7 +184,7 @@ exports.commentOnPost=async(req,res)=>{
             message:error.message
         })
     }
-}/*
+}
 exports.deleteComment=async(req,res)=>{
     try{
         const post=await Post.findById(req.params.id)
@@ -194,19 +194,23 @@ exports.deleteComment=async(req,res)=>{
                 message:"Post Not Found"
             })
         }
-        if(post.owner.toString()!==req.user._id.toString()){
-
-        }
-        else{
-        post.comments.forEach((item,index)=>{
-            if(item.user.toString()===req.user._id.toString()){
-                return post.comments.splice(index,1);
+//checking if owner wants to delete
+        if(post.owner.toString()===req.user._id.toString()){
+            if(req.body.commentId==undefined){
+                return res.status(400).json({
+                    success:false,
+                    message:"comment Id is required"
+                })
             }
-        })
+            post.comments.forEach((item,index)=>{
+                if(item._id.toString()==req.body.commentId.toString()){
+                    return post.comments.splice(index,1)
+                }
+            })
         await post.save()
-        res.status(200).json({
+        return res.status(200).json({
             success:true,
-            message:"Your Comment Deleted"
+            message:"Your Comment has Deleted"
         })
     }
     }catch(error){
@@ -215,4 +219,4 @@ exports.deleteComment=async(req,res)=>{
             message:error.message
         })
     }
-}*/
+}
